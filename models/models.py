@@ -13,7 +13,7 @@ def get_model(args):
             )
     else:
         model = timm.create_model(args.model,
-                                  #pretrained=args.pretrained,
+                                  pretrained=args.pretrained,
                                   num_classes=args.num_classes)
         
         
