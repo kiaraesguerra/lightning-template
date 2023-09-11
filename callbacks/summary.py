@@ -1,5 +1,5 @@
 from pytorch_lightning.callbacks import RichModelSummary
 
 
-def summary(args):
+def summary_callback(args):
     return None

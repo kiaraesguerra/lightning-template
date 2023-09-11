@@ -1,4 +1,2 @@
-
-
-def qat(args):
+def qat_callback(args):
     return None

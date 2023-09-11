@@ -1,7 +1,7 @@
 from pytorch_lightning.callbacks import EarlyStopping
 
 
-def early_stopping(args):
+def early_stopping_callback(args):
     return EarlyStopping(
         monitor=args.monitor,
         min_delta=args.min_delta,

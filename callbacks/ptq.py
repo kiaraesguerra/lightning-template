@@ -1,4 +1,2 @@
-
-
-def ptq(args):
+def ptq_callback(args):
     return None

@@ -1,17 +1,10 @@
-__all__ = ['checkpoint',
-           'early_stopping',
-           'summary',
-          'prune',
-           'low_rank',
-           'ptq',
-           'qat'
-]
+__all__ = ["checkpoint_callback", "early_stopping_callback", "summary_callback", "prune_callback", "low_rank_callback", "ptq_callback", "qat_callback"]
 
 
-from .early_stopping import early_stopping
-from .checkpoint import checkpoint
-from .summary import summary
-from .prune import prune
-from .low_rank import low_rank
-from .ptq import ptq
-from .qat import qat
+from .early_stopping import early_stopping_callback
+from .checkpoint import checkpoint_callback
+from .summary import summary_callback
+from .prune import prune_callback
+from .low_rank import low_rank_callback
+from .ptq import ptq_callback
+from .qat import qat_callback

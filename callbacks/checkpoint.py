@@ -1,7 +1,7 @@
 from pytorch_lightning.callbacks import ModelCheckpoint
 
 
-def checkpoint(args):
+def checkpoint_callback(args):
     checkpoint_callback = ModelCheckpoint(
         monitor="val/acc",
         save_top_k=args.save_top_k,
@@ -14,5 +14,3 @@ def checkpoint(args):
         mode="max",
     )
     return checkpoint_callback
-    
-        
