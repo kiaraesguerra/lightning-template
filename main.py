@@ -72,7 +72,7 @@ parser.add_argument("--weight-decay",  type=float, default=1e-4)
 parser.add_argument("--drop-out",  type=float, default=1e-4)
 
 # Callbacks
-parser.add_argument("--checkpoints", action="store_true")
+parser.add_argument("--checkpoint", action="store_true")
 parser.add_argument("--save-top-k", type=int, default=1)
 parser.add_argument("--save-last", action="store_true")
 parser.add_argument("--ckpt-path", type=str, default=None)
@@ -84,13 +84,24 @@ parser.add_argument("--filename", type=str, default="best")
 parser.add_argument("--qat", action="store_true")
 parser.add_argument("--ptq", action="store_true")
 
+# Low Rank
+parser.add_argument("--low-rank", action="store_true")
+
 # Pruning
 parser.add_argument("--prune", action="store_true")
-parser.add_argument("--prune-method", type=str, default="l1")
+parser.add_argument("--method", type=str, default="l1")
 parser.add_argument("--speed-up", type=float, default=2.0)
+parser.add_argument("--ch-sparsity", type=float, default=1.0)
+parser.add_argument("--max-sparsity", type=float, default=1.0)
+
+# Early Stopping
+parser.add_argument("--early-stopping", action="store_true")
+
+# Rich Model Summary
+parser.add_argument("--summary", action="store_true")
+
 
 # Saving and logging
-
 args = parser.parse_args()
 
     
@@ -123,9 +134,8 @@ if __name__ == "__main__":
     )
     
     trainer.fit(model, train_dl, validate_dl)
-    breakpoint()
     trainer.test(dataloaders=test_dl)
-    ckpt_path = callbacks[0].best_model_path
+    ckpt_path = [a for a in callbacks if 'checkpoint' in str(a)][0].best_model_path
     model_checkpoint = torch.load(ckpt_path)
     model.load_state_dict(model_checkpoint["state_dict"])
 

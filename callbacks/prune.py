@@ -10,7 +10,7 @@ from typing import List
 # Third Party Library
 import torch
 import torch.nn as nn
-from lightning.pytorch.callbacks.callback import Callback
+from pytorch_lightning.callbacks import Callback
 
 
 class Pruner(Callback):
@@ -29,7 +29,7 @@ class Pruner(Callback):
         self.current_speed_up = 1.0
         self.num_classes=10
         
-        self.example_inputs = torch.randn(3, 1, 28, 28).to('cuda')
+        self.example_inputs = torch.randn(3, 3, 32, 32).to('cuda')
         self.reg = 5e-4
         self.global_pruning=True
 
@@ -86,22 +86,25 @@ class Pruner(Callback):
     
     def progressive_pruning(self, model):
         model.eval()
-        base_ops, _ = tp.utils.count_ops_and_params(model, example_inputs=self.example_inputs)
-        
-        while self.current_speed_up < self.speed_up:
-            self.pruner.step(interactive=False)
-            pruned_ops, _ = tp.utils.count_ops_and_params(model, example_inputs=self.example_inputs)
-            self.current_speed_up = float(base_ops) / pruned_ops
-        
-        print(self.current_speed_up)
+        base_ops, _ = tp.utils.count_ops_and_params(model.model, example_inputs=self.example_inputs)
 
+        while self.current_speed_up < self.speed_up:
+            self.pruner.step()
+            pruned_ops, _ = tp.utils.count_ops_and_params(model.model, example_inputs=self.example_inputs)
+            self.current_speed_up = float(base_ops) / pruned_ops
+        print(f'Current speed up: {self.current_speed_up}')
+        
     
     def on_fit_start(self, trainer, pl_module):
-        
         self.pruner = self._get_pruner(pl_module)
         self.progressive_pruning(pl_module)
         
         
-        
-        
-        
+def prune(args):
+    pruner = Pruner(method = args.method,
+                    speed_up = args.speed_up,
+                    ch_sparsity = args.ch_sparsity,
+                    max_sparsity = args.max_sparsity,
+                    )
+    
+    return pruner
