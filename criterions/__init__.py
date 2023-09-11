@@ -1,9 +1,4 @@
-__all__ = [
-    'bce_loss',
-    'l1_loss',
-    'mse_loss',
-    'focal_loss'
-]
+__all__ = ["bce_loss", "l1_loss", "mse_loss", "focal_loss"]
 
 
 from .bce import bce_loss

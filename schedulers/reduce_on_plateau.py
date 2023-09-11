@@ -1,7 +1,7 @@
-import torch.optim.lr_scheduler as lr_scheduler
+from torch.optim import lr_scheduler
 
 
-def reduce_on_plateau(optimizer, args):
+def reduce_on_plateau_scheduler(optimizer, args):
     scheduler = lr_scheduler.ReduceLROnPlateau(
         optimizer,
         mode=args.mode,

@@ -1,10 +1,4 @@
-all = [
-    'OrthoInit',
-    'XavierInit',
-    'KaimingInit',
-    'UniformInit',
-    'DeltaInit'
-]
+all = ["OrthoInit", "XavierInit", "KaimingInit", "UniformInit", "DeltaInit"]
 
 
 from .delta import DeltaInit

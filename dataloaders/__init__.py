@@ -1,9 +1,4 @@
-__all__ = [
-    'cifar10',
-    'cifar100',
-    'mnist',
-    'svhn'
-    ]
+__all__ = ["cifar10", "cifar100", "mnist", "svhn"]
 
 
 from .cifar10 import cifar10

@@ -1,5 +1,6 @@
 import torch.nn as nn
 
+
 def XavierInit(model, args):
     for _, module in model.named_modules():
         if isinstance(module, nn.Linear):

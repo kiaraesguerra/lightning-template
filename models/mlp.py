@@ -1,8 +1,6 @@
 import torch.nn as nn
 
 
-
-
 class MLP(nn.Module):
     def __init__(
         self,
@@ -12,7 +10,7 @@ class MLP(nn.Module):
         activation: str = "relu",
         num_layers: int = 5,
         hidden_width: int = 128,
-        batch_norm: bool = True
+        batch_norm: bool = True,
     ):
         super(MLP, self).__init__()
 
@@ -30,13 +28,16 @@ class MLP(nn.Module):
             image_size * image_size * in_channels, hidden_width
         )
         self.hidden_layers = nn.ModuleList(
-            [nn.Linear(hidden_width, hidden_width, bias=False) for _ in range(num_layers - 1)]
+            [
+                nn.Linear(hidden_width, hidden_width, bias=False)
+                for _ in range(num_layers - 1)
+            ]
         )
-        
+
         if self.batch_norm is True:
             self.bn_layers = nn.ModuleList(
                 [nn.BatchNorm1d(hidden_width) for _ in range(num_layers - 1)]
-                )
+            )
         self.output_layer = nn.Linear(hidden_width, num_classes)
 
     def forward(self, x):

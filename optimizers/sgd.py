@@ -1,5 +1,6 @@
 import torch
-        
+
+
 def sgd(model, args):
     optimizer = torch.optim.SGD(
         model.parameters(),

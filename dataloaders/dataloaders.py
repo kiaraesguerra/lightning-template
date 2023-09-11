@@ -10,10 +10,12 @@ from AutoAugment.autoaugment import CIFAR10Policy, SVHNPolicy
 def get_dataloader(args):
     train_transform, test_transform = get_transform(args)
     try:
-        train_ds, validate_ds, test_ds = dataloaders.__dict__[args.dataset](args, train_transform, test_transform)
+        train_ds, validate_ds, test_ds = dataloaders.__dict__[args.dataset](
+            args, train_transform, test_transform
+        )
     except KeyError:
         raise ValueError(f"Invalid dataset name: {args.dataset}")
-    
+
     train_dl = torch.utils.data.DataLoader(
         train_ds,
         batch_size=args.batch_size,
@@ -61,10 +63,10 @@ def get_transform(args):
                 0.25874835,
             ]
 
-    elif args.dataset == 'mnist':
+    elif args.dataset == "mnist":
         args.in_channels = 1
         args.image_size = 28
-        args.padding=4
+        args.padding = 4
         args.mean, args.std = [0.1307], [0.3081]
 
     else:
@@ -73,7 +75,9 @@ def get_transform(args):
         args.mean, args.std = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
 
     train_transform_list = [
-        transforms.RandomCrop(size=(args.image_size, args.image_size), padding=args.padding),
+        transforms.RandomCrop(
+            size=(args.image_size, args.image_size), padding=args.padding
+        ),
         transforms.Resize(size=(args.image_size, args.image_size)),
     ]
 
@@ -81,9 +85,7 @@ def get_transform(args):
         train_transform_list.extend([transforms.RandomHorizontalFlip()])
 
     if args.autoaugment:
-        if (
-            args.dataset in ["cifar10", "cifar100", "cinic10"]
-        ):
+        if args.dataset in ["cifar10", "cifar100", "cinic10"]:
             train_transform_list.append(CIFAR10Policy())
         elif args.dataset == "svhn":
             train_transform_list.append(SVHNPolicy())

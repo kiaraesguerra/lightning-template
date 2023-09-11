@@ -1,6 +1,7 @@
-import torch.optim.lr_scheduler as lr_scheduler
+from torch.optim import lr_scheduler
 
-def exponential(optimizer, args):
+
+def exponential_scheduler(optimizer, args):
     scheduler = lr_scheduler.ExponentialLR(
         optimizer,
         gamma=args.gamma,

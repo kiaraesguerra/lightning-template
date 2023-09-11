@@ -12,7 +12,7 @@ class Base:
     ):
         # These could be the number of input/output channels of a convolutional layer or the number of input/output features of a linear layer
         # I opted for in_channels/out_channels for convenience
-        self.in_channels = module.weight.shape[1] 
+        self.in_channels = module.weight.shape[1]
         self.out_channels = module.weight.shape[0]
         self.rows = min(self.out_channels, self.in_channels)
         self.columns = max(self.out_channels, self.in_channels)
@@ -38,4 +38,4 @@ class Base:
             columns = self.in_channels
             orthogonal_matrix = self._ortho_gen(rows, columns)
 
-        return orthogonal_matrix.to('cuda')
+        return orthogonal_matrix.to("cuda")

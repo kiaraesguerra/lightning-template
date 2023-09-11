@@ -1,5 +1,6 @@
 import torch.nn as nn
 
+
 def UniformInit(model, a=0.0, b=1.0):
     for _, module in model.named_modules():
         if isinstance(module, nn.Linear):

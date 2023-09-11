@@ -1,6 +1,7 @@
-import torch.optim.lr_scheduler as lr_scheduler
+from torch.optim import lr_scheduler
 
-def step(optimizer, args):
+
+def step_scheduler(optimizer, args):
     scheduler = lr_scheduler.StepLR(
         optimizer,
         step_size=args.step_size,

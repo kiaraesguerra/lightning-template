@@ -8,6 +8,7 @@ def _ortho_gen(rows, columns) -> torch.tensor:
     orthogonal_matrix = q[:, :columns]
     return orthogonal_matrix.T if columns > rows else orthogonal_matrix
 
+
 def _concat(matrix):
     W = torch.concat(
         [
@@ -35,6 +36,8 @@ def _ortho_generator(module, activation) -> torch.tensor:
 def OrthoInit(model, args):
     for _, module in model.named_modules():
         if isinstance(module, nn.Linear):
-            module.weight = nn.Parameter(_ortho_generator(module, args.activation) * args.gain)
+            module.weight = nn.Parameter(
+                _ortho_generator(module, args.activation) * args.gain
+            )
 
     return model

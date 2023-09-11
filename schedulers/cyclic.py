@@ -1,7 +1,7 @@
-import torch.optim.lr_scheduler as lr_scheduler
+from torch.optim import lr_scheduler
 
 
-def cyclic(optimizer, args):
+def cyclic_scheduler(optimizer, args):
     scheduler = lr_scheduler.CyclicLR(
         optimizer,
         base_lr=args.base_lr,

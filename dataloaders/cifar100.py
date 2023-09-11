@@ -11,5 +11,5 @@ def cifar100(args, train_transform, test_transform):
     validate_ds = None
     args.num_classes = 100
     args.in_channels = 3
-    
+
     return train_ds, validate_ds, test_ds

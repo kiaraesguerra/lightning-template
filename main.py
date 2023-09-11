@@ -7,17 +7,22 @@ from initializers.initializers import get_weight_init
 from utils.train_utils import get_plmodule
 from callbacks.callbacks import get_callback
 from loggers.loggers import get_logger
-
+from exports.exports import export_model
 
 
 parser = argparse.ArgumentParser(description="PyTorch Lightning Trainer")
 
 # Model Initialization
-parser.add_argument("--model", type=str, default='resnet18')
+parser.add_argument("--model", type=str, default="resnet18")
 parser.add_argument("--pretrained", action="store_true")
-parser.add_argument("--weight-init", type=str, default="ortho")
+parser.add_argument("--weight-init", type=str, default="OrthoInit")
 parser.add_argument("--gain", type=float, default=1.0)
-parser.add_argument("--pretrained-path", type=str, default=None, metavar="Path to the user-trained model")
+parser.add_argument(
+    "--pretrained-path",
+    type=str,
+    default=None,
+    metavar="Path to the user-trained model",
+)
 
 # For custom architectures, i.e. MLP
 parser.add_argument("--num-layers", type=int, default=5)
@@ -68,8 +73,8 @@ parser.add_argument("--beta1", type=float, default=0.9)
 parser.add_argument("--beta2", type=float, default=0.99)
 
 # Regularization
-parser.add_argument("--weight-decay",  type=float, default=1e-4)
-parser.add_argument("--drop-out",  type=float, default=1e-4)
+parser.add_argument("--weight-decay", type=float, default=1e-4)
+parser.add_argument("--drop-out", type=float, default=1e-4)
 
 # Callbacks
 parser.add_argument("--checkpoint", action="store_true")
@@ -100,44 +105,57 @@ parser.add_argument("--early-stopping", action="store_true")
 # Rich Model Summary
 parser.add_argument("--summary", action="store_true")
 
+# Exports
+parser.add_argument("--onnx", action="store_true")
+parser.add_argument("--torch", action="store_true")
+parser.add_argument("--torchscript", action="store_true")
 
 # Saving and logging
 args = parser.parse_args()
 
-    
-if __name__ == "__main__":
 
+
+
+
+if __name__ == "__main__":
     train_dl, validate_dl, test_dl = get_dataloader(args)
     model = get_model(args)
 
     # args.baseline_path should point to the .pt file
     if args.pretrained_path:
         model_checkpoint = torch.load(args.pretrained_path)
-        model.load_state_dict(torch.load(args.pretrained_path))
+        model.load_state_dict(model_checkpoint["state_dict"])
     elif args.pretrained:
         pass
     else:
         model = get_weight_init(model, args)
     model = get_plmodule(model, args)
-    
+
     callbacks = get_callback(args)
     logger = get_logger(args)
-    
+
     trainer = Trainer(
         max_epochs=args.epochs,
         accelerator="gpu",
         callbacks=callbacks,
         logger=logger,
     )
-    
+
     trainer.fit(model, train_dl, validate_dl)
     trainer.test(dataloaders=test_dl)
     if callbacks:
-        ckpt_path = [a for a in callbacks if 'checkpoint' in str(a)][0].best_model_path
+        ckpt_path = [a for a in callbacks if "checkpoint" in str(a)][0].best_model_path
     model_checkpoint = torch.load(ckpt_path)
-    model.load_state_dict(model_checkpoint["state_dict"])
+    
+    #breakpoint()
+    
+    args.sample_input = train_dl.dataset[0][0].unsqueeze(0)
+    
+    
+    export_model(model, args)
+    
+    
+    
+    
+    #model.load_state_dict(model_checkpoint["state_dict"])
 
-    torch.save(
-        model.model.state_dict(),
-        f"{args.dirpath}/{args.experiment_name}/{args.experiment_name}.pt",
-    )

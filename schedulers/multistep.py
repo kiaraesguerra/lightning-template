@@ -1,7 +1,7 @@
-import torch.optim.lr_scheduler as lr_scheduler
+from torch.optim import lr_scheduler
 
 
-def multistep(optimizer, args):
+def multistep_scheduler(optimizer, args):
     scheduler = lr_scheduler.MultiStepLR(
         optimizer, milestones=args.milestones, gamma=args.gamma
     )

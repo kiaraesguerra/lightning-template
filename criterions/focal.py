@@ -20,22 +20,23 @@ class FocalLoss(nn.Module):
         does not contribute to the input gradient. optional.
         eps (float): smoothing to prevent log from returning inf.
     """
+
     def __init__(
-            self,
-            gamma,
-            weights: Union[None, Tensor] = None,
-            reduction: str = 'mean',
-            ignore_index=-100,
-            eps=1e-16
-            ) -> None:
+        self,
+        gamma,
+        weights: Union[None, Tensor] = None,
+        reduction: str = "mean",
+        ignore_index=-100,
+        eps=1e-16,
+    ) -> None:
         super().__init__()
-        if reduction not in ['mean', 'none', 'sum']:
-            raise NotImplementedError(
-                'Reduction {} not implemented.'.format(reduction)
-                )
-        assert weights is None or isinstance(weights, Tensor), \
-            'weights should be of type Tensor or None, but {} given'.format(
-                type(weights))
+        if reduction not in ["mean", "none", "sum"]:
+            raise NotImplementedError("Reduction {} not implemented.".format(reduction))
+        assert weights is None or isinstance(
+            weights, Tensor
+        ), "weights should be of type Tensor or None, but {} given".format(
+            type(weights)
+        )
         self.reduction = reduction
         self.gamma = gamma
         self.ignore_index = ignore_index
@@ -48,13 +49,10 @@ class FocalLoss(nn.Module):
         weights = target * self.weights
         return weights.sum(dim=-1)
 
-    def _process_target(
-            self, target: Tensor, num_classes: int, mask: Tensor
-            ) -> Tensor:
-        
-        #convert all ignore_index elements to zero to avoid error in one_hot
-        #note - the choice of value 0 is arbitrary, but it should not matter as these elements will be ignored in the loss calculation
-        target = target * (target!=self.ignore_index) 
+    def _process_target(self, target: Tensor, num_classes: int, mask: Tensor) -> Tensor:
+        # convert all ignore_index elements to zero to avoid error in one_hot
+        # note - the choice of value 0 is arbitrary, but it should not matter as these elements will be ignored in the loss calculation
+        target = target * (target != self.ignore_index)
         target = target.view(-1)
         return one_hot(target, num_classes=num_classes)
 
@@ -65,9 +63,7 @@ class FocalLoss(nn.Module):
             return x
         return x.view(-1, x.shape[-1])
 
-    def _calc_pt(
-            self, target: Tensor, x: Tensor, mask: Tensor
-            ) -> Tensor:
+    def _calc_pt(self, target: Tensor, x: Tensor, mask: Tensor) -> Tensor:
         p = target * x
         p = p.sum(dim=-1)
         p = p * ~mask
@@ -75,9 +71,9 @@ class FocalLoss(nn.Module):
 
     def forward(self, x: Tensor, target: Tensor) -> Tensor:
         assert torch.all((x >= 0.0) & (x <= 1.0)), ValueError(
-            'The predictions values should be between 0 and 1, \
+            "The predictions values should be between 0 and 1, \
                 make sure to pass the values to sigmoid for binary \
-                classification or softmax for multi-class classification'
+                classification or softmax for multi-class classification"
         )
         mask = target == self.ignore_index
         mask = mask.view(-1)
@@ -89,21 +85,19 @@ class FocalLoss(nn.Module):
         focal = 1 - pt
         nll = -torch.log(self.eps + pt)
         nll = nll.masked_fill(mask, 0)
-        loss = weights * (focal ** self.gamma) * nll
+        loss = weights * (focal**self.gamma) * nll
         return self._reduce(loss, mask, weights)
 
     def _reduce(self, x: Tensor, mask: Tensor, weights: Tensor) -> Tensor:
-        if self.reduction == 'mean':
+        if self.reduction == "mean":
             return x.sum() / (~mask * weights).sum()
-        elif self.reduction == 'sum':
+        elif self.reduction == "sum":
             return x.sum()
         else:
             return x
-        
-        
+
+
 def focal_loss(args):
     return FocalLoss(
-        gamma=args.gamma, 
-        weights=args.weights,
-        reduction=args.reduction,
-        eps=args.eps)
+        gamma=args.gamma, weights=args.weights, reduction=args.reduction, eps=args.eps
+    )

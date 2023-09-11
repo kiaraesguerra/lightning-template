@@ -11,7 +11,5 @@ def mnist(args, train_transform, test_transform):
     validate_ds = None
     args.num_classes = 10
     args.in_channels = 1
-    
+
     return train_ds, validate_ds, test_ds
-
-

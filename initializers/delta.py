@@ -3,6 +3,7 @@ import torch.nn as nn
 from itertools import product
 from initializers.base import Base
 
+
 class Delta_Module(Base):
     def __init__(
         self,
@@ -47,8 +48,10 @@ def DeltaInit(model, **kwargs):
             vals = Delta_Constructor(module, **kwargs)
             if isinstance(vals, tuple):
                 module.weight = nn.Parameter(vals[0])
-                torch.nn.utils.prune.custom_from_mask(module, "weight", torch.abs(vals[1]))
-                
+                torch.nn.utils.prune.custom_from_mask(
+                    module, "weight", torch.abs(vals[1])
+                )
+
             else:
                 module.weight = nn.Parameter(vals)
         elif isinstance(module, nn.Linear):

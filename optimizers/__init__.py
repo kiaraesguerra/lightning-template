@@ -1,9 +1,9 @@
 __all__ = [
-    'adam',
-    'adamw',
-    'radam',
-    'rmsprop',
-    'sgd',
+    "adam",
+    "adamw",
+    "radam",
+    "rmsprop",
+    "sgd",
 ]
 
 

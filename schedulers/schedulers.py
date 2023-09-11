@@ -5,11 +5,11 @@ import schedulers
 
 def get_scheduler(optimizer, args):
     try:
-        scheduler_cls = schedulers.__dict__[args.scheduler](optimizer, args)
-        
+        scheduler_cls = schedulers.__dict__[args.scheduler + '_scheduler'](optimizer, args)
+
     except KeyError:
-        raise ValueError(f"Invalid scheduler name: {args.optimizer}")    
-    
+        raise ValueError(f"Invalid scheduler name: {args.optimizer}")
+
     if args.warmup_epochs:
         scheduler = warmup_scheduler.GradualWarmupScheduler(
             optimizer,
@@ -21,9 +21,3 @@ def get_scheduler(optimizer, args):
         scheduler = scheduler_cls
 
     return scheduler
-
-
-
-
-
-
