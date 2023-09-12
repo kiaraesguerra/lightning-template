@@ -114,9 +114,6 @@ parser.add_argument("--torchscript", action="store_true")
 args = parser.parse_args()
 
 
-
-
-
 if __name__ == "__main__":
     train_dl, validate_dl, test_dl = get_dataloader(args)
     model = get_model(args)
@@ -146,16 +143,7 @@ if __name__ == "__main__":
     if callbacks:
         ckpt_path = [a for a in callbacks if "checkpoint" in str(a)][0].best_model_path
     model_checkpoint = torch.load(ckpt_path)
-    
-    #breakpoint()
-    
-    args.sample_input = train_dl.dataset[0][0].unsqueeze(0)
-    
-    
-    export_model(model, args)
-    
-    
-    
-    
-    #model.load_state_dict(model_checkpoint["state_dict"])
+    model.load_state_dict(model_checkpoint["state_dict"])
 
+    args.sample_input = train_dl.dataset[0][0].unsqueeze(0)
+    export_model(model, args)
