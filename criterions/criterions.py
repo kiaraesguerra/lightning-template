@@ -1,12 +1,11 @@
 import torch.nn as nn
+import criterions
 
 
 def get_criterion(args):
-    criterion_mapping = {
-        "crossentropy": nn.CrossEntropyLoss(label_smoothing=args.label_smoothing),
-        "bce": nn.BCELoss(),
-        "l1": nn.L1Loss(),
-    }
+    try:
+        criterion = criterions.__dict__[args.criterion](args)
+    except KeyError:
+        raise ValueError(f"Invalid criterion name: {args.criterion}")
 
-    criterion = criterion_mapping.get(args.criterion.lower(), None)
     return criterion
