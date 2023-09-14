@@ -4,7 +4,7 @@ import criterions
 
 def get_criterion(args):
     try:
-        criterion = criterions.__dict__[args.criterion](args)
+        criterion = criterions.__dict__[args.criterion + '_loss'](args)
     except KeyError:
         raise ValueError(f"Invalid criterion name: {args.criterion}")
 

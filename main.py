@@ -57,7 +57,7 @@ parser.add_argument("--scheduler", type=str, default="multistep")
 parser.add_argument("--milestones", type=list, default=[100, 150])
 
 # Criterion
-parser.add_argument("--criterion", type=str, default="crossentropy")
+parser.add_argument("--criterion", type=str, default="cross_entropy")
 parser.add_argument("--label-smoothing", type=float, default=0)
 
 # Optimizer settings
