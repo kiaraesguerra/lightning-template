@@ -14,6 +14,7 @@ def get_callback(args):
             args.low_rank: "low_rank_callback",
             args.ptq: "ptq_callback",
             args.qat: "qat_callback",
+            args.cutmix: "cutmix_callback",
         }.items()
         if flag
     ]

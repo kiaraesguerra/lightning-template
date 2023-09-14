@@ -1,4 +1,13 @@
-__all__ = ["checkpoint_callback", "early_stopping_callback", "summary_callback", "prune_callback", "low_rank_callback", "ptq_callback", "qat_callback"]
+__all__ = [
+    "checkpoint_callback",
+    "early_stopping_callback",
+    "summary_callback",
+    "prune_callback",
+    "low_rank_callback",
+    "ptq_callback",
+    "qat_callback",
+    "cutmix_callback",
+]
 
 
 from .early_stopping import early_stopping_callback
@@ -8,3 +17,4 @@ from .prune import prune_callback
 from .low_rank import low_rank_callback
 from .ptq import ptq_callback
 from .qat import qat_callback
+from .cutmix import cutmix_callback

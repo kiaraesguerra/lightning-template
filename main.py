@@ -85,6 +85,9 @@ parser.add_argument("--experiment-name", type=str, default="experiment")
 parser.add_argument("--dirpath", type=str, default="results")
 parser.add_argument("--filename", type=str, default="best")
 
+# CutMix
+parser.add_argument("--cutmix", action="store_true")
+
 # QAT and PTQ
 parser.add_argument("--qat", action="store_true")
 parser.add_argument("--ptq", action="store_true")
