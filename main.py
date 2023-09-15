@@ -8,6 +8,7 @@ from utils.train_utils import get_plmodule
 from callbacks.callbacks import get_callback
 from loggers.loggers import get_logger
 from exports.exports import export_model
+from lrs.lrs_init_call import get_ls_init
 
 
 parser = argparse.ArgumentParser(description="PyTorch Lightning Trainer")
@@ -97,7 +98,14 @@ parser.add_argument("--max-sparsity", type=float, default=1.0)
 parser.add_argument("--exports", nargs="+", help="<Required> Set flag")
 # Can add: "onnx", "torchscript"
 
-# Saving and logging
+# LR + S
+parser.add_argument("--lrs", action="store_true")
+parser.add_argument("--sparse-matrix", type=str, default="ramanujan")
+parser.add_argument("--threshold", type=float, default=1e-3)
+parser.add_argument("--sparsity", type=float, default=None)
+parser.add_argument("--degree", type=int, default=None)
+parser.add_argument("--rank", type=int, default=None)
+
 args = parser.parse_args()
 
 
@@ -113,8 +121,14 @@ if __name__ == "__main__":
         pass
     else:
         model = get_weight_init(model, args)
-    model = get_plmodule(model, args)
 
+    if args.lrs:
+        model = get_ls_init(model, args)
+        
+        
+    breakpoint()
+
+    model = get_plmodule(model, args)
     callbacks = get_callback(args)
     logger = get_logger(args)
 
