@@ -10,6 +10,4 @@ def get_callback(args):
         for callback in callbacks_name_list
     ]
 
-    breakpoint()
-
     return callbacks_list
