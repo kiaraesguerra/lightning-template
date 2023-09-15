@@ -77,7 +77,7 @@ parser.add_argument("--weight-decay", type=float, default=1e-4)
 parser.add_argument("--drop-out", type=float, default=1e-4)
 
 # Callbacks
-parser.add_argument("--callbacks", nargs="+", help="<Required> Set flag", required=True)
+parser.add_argument("--callbacks", nargs="+", help="<Required> Set flag")
 # Can add: "prune", "cutmix", "qat", "ptq", "low-rank", "summary", "early_stopping"
 
 parser.add_argument("--save-top-k", type=int, default=1)
@@ -94,7 +94,7 @@ parser.add_argument("--ch-sparsity", type=float, default=1.0)
 parser.add_argument("--max-sparsity", type=float, default=1.0)
 
 # Exports
-parser.add_argument("--exports", nargs="+", help="<Required> Set flag", required=True)
+parser.add_argument("--exports", nargs="+", help="<Required> Set flag")
 # Can add: "onnx", "torchscript"
 
 # Saving and logging
