@@ -2,24 +2,14 @@ import callbacks
 
 
 def get_callback(args):
-    callbacks_list = []
+    defaults = ["checkpoint"]
+    callbacks_name_list = set(args.callbacks + defaults)
 
-    callbacks_name_list = [
-        name
-        for flag, name in {
-            args.checkpoint: "checkpoint_callback",
-            args.early_stopping: "early_stopping_callback",
-            args.summary: "summary_callback",
-            args.prune: "prune_callback",
-            args.low_rank: "low_rank_callback",
-            args.ptq: "ptq_callback",
-            args.qat: "qat_callback",
-            args.cutmix: "cutmix_callback",
-        }.items()
-        if flag
+    callbacks_list = [
+        callbacks.__dict__[callback + "_callback"](args)
+        for callback in callbacks_name_list
     ]
 
-    for name in callbacks_name_list:
-        callbacks_list.append(callbacks.__dict__[name](args))
+    breakpoint()
 
     return callbacks_list

@@ -6,6 +6,7 @@ import numpy as np
 
 from criterions.criterions import get_criterion
 
+
 def rand_bbox(size, lam):
     W = size[2]
     H = size[3]
@@ -36,7 +37,6 @@ class CutMix(Callback):
         self.cutmix_prob = cutmix_prob
         self.criterion = criterion
 
-       
     def training_step(self, batch, batch_idx):
         img, label = batch
         r = np.random.rand(1)
@@ -49,18 +49,21 @@ class CutMix(Callback):
             bbx1, bby1, bbx2, bby2 = rand_bbox(img.size(), lam)
             img[:, :, bbx1:bbx2, bby1:bby2] = img[rand_index, :, bbx1:bbx2, bby1:bby2]
             # adjust lambda to exactly match pixel ratio
-            lam = 1 - ((bbx2 - bbx1) * (bby2 - bby1) / (img.size()[-1] * img.size()[-2]))
+            lam = 1 - (
+                (bbx2 - bbx1) * (bby2 - bby1) / (img.size()[-1] * img.size()[-2])
+            )
             # compute output
             with torch.cuda.amp.autocast():
                 out = self.model(img)
-                loss = self.criterion(out, target_a) * lam + self.criterion(out, target_b) * (1. - lam)
-                
+                breakpoint(0)
+                loss = self.criterion(out, target_a) * lam + self.criterion(
+                    out, target_b
+                ) * (1.0 - lam)
+
             return loss
-        
-        
+
+
 def cutmix_callback(args):
-    cutmix = CutMix(cutmix_beta = 1.0,
-                    cutmix_prob = 0.5,
-                    criterion = get_criterion(args))
+    cutmix = CutMix(cutmix_beta=1.0, cutmix_prob=0.5, criterion=get_criterion(args))
 
     return cutmix

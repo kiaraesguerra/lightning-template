@@ -77,7 +77,9 @@ parser.add_argument("--weight-decay", type=float, default=1e-4)
 parser.add_argument("--drop-out", type=float, default=1e-4)
 
 # Callbacks
-parser.add_argument("--checkpoint", action="store_true")
+parser.add_argument("--callbacks", nargs="+", help="<Required> Set flag", required=True)
+# Can add: "prune", "cutmix", "qat", "ptq", "low-rank", "summary", "early_stopping"
+
 parser.add_argument("--save-top-k", type=int, default=1)
 parser.add_argument("--save-last", action="store_true")
 parser.add_argument("--ckpt-path", type=str, default=None)
@@ -85,28 +87,11 @@ parser.add_argument("--experiment-name", type=str, default="experiment")
 parser.add_argument("--dirpath", type=str, default="results")
 parser.add_argument("--filename", type=str, default="best")
 
-# CutMix
-parser.add_argument("--cutmix", action="store_true")
-
-# QAT and PTQ
-parser.add_argument("--qat", action="store_true")
-parser.add_argument("--ptq", action="store_true")
-
-# Low Rank
-parser.add_argument("--low-rank", action="store_true")
-
 # Pruning
-parser.add_argument("--prune", action="store_true")
 parser.add_argument("--method", type=str, default="l1")
 parser.add_argument("--speed-up", type=float, default=2.0)
 parser.add_argument("--ch-sparsity", type=float, default=1.0)
 parser.add_argument("--max-sparsity", type=float, default=1.0)
-
-# Early Stopping
-parser.add_argument("--early-stopping", action="store_true")
-
-# Rich Model Summary
-parser.add_argument("--summary", action="store_true")
 
 # Exports
 parser.add_argument("--onnx", action="store_true")
