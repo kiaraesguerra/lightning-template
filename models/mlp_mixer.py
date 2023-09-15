@@ -19,7 +19,6 @@ class MLPMixer(nn.Module):
         num_layers=8,
         num_classes=10,
         drop_p=0.0,
-        off_act=False,
         is_cls_token=False,
     ):
         super(MLPMixer, self).__init__()
@@ -81,7 +80,7 @@ class MLP1(nn.Module):
         self.do1 = nn.Dropout(p=drop_p)
         self.fc2 = nn.Conv1d(hidden_s, num_patches, kernel_size=1)
         self.do2 = nn.Dropout(p=drop_p)
-        self.act = F.gelu if not off_act else lambda x: x
+        self.act = F.gelu
 
     def forward(self, x):
         out = self.do1(self.act(self.fc1(self.ln(x))))
@@ -97,7 +96,7 @@ class MLP2(nn.Module):
         self.do1 = nn.Dropout(p=drop_p)
         self.fc2 = nn.Linear(hidden_c, hidden_size)
         self.do2 = nn.Dropout(p=drop_p)
-        self.act = F.gelu if not off_act else lambda x: x
+        self.act = F.gelu
 
     def forward(self, x):
         out = self.do1(self.act(self.fc1(self.ln(x))))
@@ -116,7 +115,6 @@ def mlp_mixer(args):
         num_layers=8,
         num_classes=10,
         drop_p=0.0,
-        off_act=False,
         is_cls_token=False,
     )
 
