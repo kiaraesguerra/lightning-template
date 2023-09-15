@@ -58,7 +58,7 @@ parser.add_argument("--milestones", type=list, default=[100, 150])
 
 # Criterion
 parser.add_argument("--criterion", type=str, default="cross_entropy")
-parser.add_argument("--label-smoothing", type=float, default=0)
+parser.add_argument("--label-smoothing", type=float, default=0.1)
 
 # Optimizer settings
 parser.add_argument("--optimizer", type=str, default="sgd")
@@ -94,9 +94,8 @@ parser.add_argument("--ch-sparsity", type=float, default=1.0)
 parser.add_argument("--max-sparsity", type=float, default=1.0)
 
 # Exports
-parser.add_argument("--onnx", action="store_true")
-parser.add_argument("--torch", action="store_true")
-parser.add_argument("--torchscript", action="store_true")
+parser.add_argument("--exports", nargs="+", help="<Required> Set flag", required=True)
+# Can add: "onnx", "torchscript"
 
 # Saving and logging
 args = parser.parse_args()

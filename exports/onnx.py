@@ -5,7 +5,7 @@ def onnx_export(model, args):
     torch.onnx.export(
         model,
         args.sample_input,
-        f"{args.dirpath}/{args.experiment_name}/model.onnx",
+        f"{args.dirpath}/{args.experiment_name}/{args.experiment_name}.onnx",
         export_params=True,
         opset_version=10,
         do_constant_folding=True,
