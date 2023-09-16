@@ -20,7 +20,7 @@ def measure_sparsity(model):
             num_elements += module_num_elements
 
     sparsity = num_zeros / num_elements
-    return sparsity
+    return sparsity, num_elements - num_zeros
 
 
 def remove_parameters(model):

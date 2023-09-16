@@ -34,8 +34,7 @@ class LowRankSparseInitializer(Base, Ramanujan_Constructions):
             nn.Sequential: LR (+ S) Module
         """
         LRS_module = LRSModule(
-            in_features=module.weight.shape[1],
-            out_features=module.weight.shape[0],
+            module=module,
             rank=self.rank,
             sparse_matrix=self.sparse_matrix,
             sparsity=self.sparsity,
@@ -55,8 +54,9 @@ class LowRankSparseInitializer(Base, Ramanujan_Constructions):
         """
 
         constructor = Ramanujan_Constructions(
-            height=module.weight.shape[0],
-            width=module.weight.shape[1],
+            module=module,
+            # height=module.weight.shape[0],
+            # width=module.weight.shape[1],
             method=self.sparse_matrix,
             sparsity=self.sparsity,
             degree=self.degree,
@@ -67,13 +67,25 @@ class LowRankSparseInitializer(Base, Ramanujan_Constructions):
 
         return s_weight_matrix
 
+    def _ortho_generator(self, height, width, activation) -> torch.tensor:
+        if activation == "relu":
+            rows = height // 2
+            columns = width // 2
+            orthogonal_matrix = self._concat(self._ortho_gen(rows, columns))
+
+        else:
+            rows = height
+            columns = width
+            orthogonal_matrix = self._ortho_gen(rows, columns)
+        return orthogonal_matrix
+
     def _low_rank_weights_svd(self, module):
         """Generates a low rank sparse matrix using svd"""
 
         LR = module.weight.reshape(module.weight.shape[0], -1).to("cuda")
 
         if self.sparse_matrix:
-            s_weight_matrix = self._sparse_matrix(module)
+            s_weight_matrix = self._sparse_matrix_weights(module)
             LR = LR - s_weight_matrix
 
         u, s, v = torch.linalg.svd(LR)
@@ -92,12 +104,14 @@ class LowRankSparseInitializer(Base, Ramanujan_Constructions):
     def _low_rank_weights_explicit(self, module):
         """Generates a low rank sparse matrix explicitly"""
 
-        s_weight_matrix = self._sparse_matrix(module) if self.sparse_matrix else None
+        s_weight_matrix = (
+            self._sparse_matrix_weights(module) if self.sparse_matrix else None
+        )
         w_weight_matrix = self._ortho_generator(
-            module.weights.shape[1], self.rank, self.activation
+            width=module.weight.shape[1], height=self.rank, activation=self.activation
         )
         u_weight_matrix = self._ortho_generator(
-            self.rank, module.weights.shape[0], self.activation
+            width=self.rank, height=module.weight.shape[0], activation=self.activation
         )
 
         return w_weight_matrix, u_weight_matrix, s_weight_matrix
@@ -119,9 +133,12 @@ class LowRankSparseInitializer(Base, Ramanujan_Constructions):
         )
 
         if self.sparse_matrix:
+            s_matrix = s_matrix.reshape(LRS_module.S_layer.weight.shape)
             LRS_module.S_layer.weight = nn.Parameter(s_matrix)
             torch.nn.utils.prune.custom_from_mask(
-                LRS_module.S_layer, name="weight", mask=(s_matrix != 0) * 1
+                LRS_module.S_layer,
+                name="weight",
+                mask=(s_matrix != 0) * 1,
             )
 
         return LRS_module
@@ -143,3 +160,4 @@ class LowRankSparseInitializer(Base, Ramanujan_Constructions):
                     name[2],
                     self._low_rank_sparse(module),
                 )
+        return self.model

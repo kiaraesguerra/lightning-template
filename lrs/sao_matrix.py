@@ -96,6 +96,7 @@ class Ramanujan_Constructions:
         Returns:
             _type_: _description_
         """
+
         if self.method.lower() == "sao":
             M = np.random.rand(self.degree, self.degree)
             return torch.tensor(orth(M), dtype=torch.float).to(self.device)
