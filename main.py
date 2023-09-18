@@ -44,8 +44,6 @@ parser.add_argument("--horizontal-flip", type=float, default=0)
 parser.add_argument("--vertical-flip", type=float, default=0)
 parser.add_argument("--random-rotations", type=float, default=0)
 parser.add_argument("--color-jitter", type=float, default=0)
-parser.add_argument("--shift-scale-rotate", type=float, default=0)
-parser.add_argument("--random-crop", type=float, default=0)
 
 # Training
 parser.add_argument("--device", type=str, default="cuda")
@@ -79,7 +77,7 @@ parser.add_argument("--weight-decay", type=float, default=1e-4)
 parser.add_argument("--drop-out", type=float, default=1e-4)
 
 # Callbacks
-parser.add_argument("--callbacks", nargs="+", help="<Required> Set flag")
+parser.add_argument("--callbacks", nargs="+")
 # Can add: "prune", "cutmix", "qat", "ptq", "low-rank", "summary", "early_stopping"
 
 parser.add_argument("--save-top-k", type=int, default=1)
