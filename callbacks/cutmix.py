@@ -31,11 +31,12 @@ class CutMix(Callback):
         self,
         cutmix_beta: float = 1.0,
         cutmix_prob: float = 0.5,
-        criterion: nn.Module = None,
+        # criterion: nn.Module = None,
     ):
         self.cutmix_beta = cutmix_beta
         self.cutmix_prob = cutmix_prob
-        self.criterion = criterion
+        # self.criterion = criterion
+        self.scaler = torch.cuda.amp.GradScaler()
 
     def training_step(self, batch, batch_idx):
         img, label = batch
@@ -60,10 +61,21 @@ class CutMix(Callback):
                     out, target_b
                 ) * (1.0 - lam)
 
-            return loss
+        else:
+            with torch.cuda.amp.autocast():
+                out = self.model(img)
+                loss = self.criterion(out, label)
+
+        self.scaler.scale(loss).backward()
+        nn.utils.clip_grad_norm_(self.model.parameters(), self.clip_grad)
+        self.scaler.step(self.optimizer)
+        self.scaler.update()
+        return loss
 
 
 def cutmix_callback(args):
-    cutmix = CutMix(cutmix_beta=1.0, cutmix_prob=0.5, criterion=get_criterion(args))
+    cutmix = CutMix(
+        cutmix_beta=1.0, cutmix_prob=0.5
+    )  # , criterion=get_criterion(args))
 
     return cutmix

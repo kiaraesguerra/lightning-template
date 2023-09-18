@@ -77,7 +77,7 @@ parser.add_argument("--weight-decay", type=float, default=1e-4)
 parser.add_argument("--drop-out", type=float, default=1e-4)
 
 # Callbacks
-parser.add_argument("--callbacks", nargs="+", help="<Required> Set flag")
+parser.add_argument("--callbacks", nargs="+")
 # Can add: "prune", "cutmix", "qat", "ptq", "low-rank", "summary", "early_stopping"
 
 parser.add_argument("--save-top-k", type=int, default=1)
@@ -114,7 +114,6 @@ if __name__ == "__main__":
     else:
         model = get_weight_init(model, args)
     model = get_plmodule(model, args)
-
     callbacks = get_callback(args)
     logger = get_logger(args)
 
