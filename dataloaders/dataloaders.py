@@ -98,11 +98,6 @@ def get_transform(args):
             )
         ]
     )
-    # train_transform_list.extend(
-    #     [transforms.ShiftScaleRotate(p=args.shift_scale_rotate)]
-    # )
-
-    # train_transform_list.extend([transforms.RandomCrop(p=args.random_crop)])
 
     if args.autoaugment:
         if args.dataset in ["cifar10", "cifar100", "cinic10"]:
