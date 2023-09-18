@@ -40,7 +40,7 @@ class MLPMixer(nn.Module):
         self.mixer_layers = nn.Sequential(
             *[
                 MixerLayer(
-                    num_patches, hidden_size, hidden_s, hidden_c, drop_p, off_act
+                    num_patches, hidden_size, hidden_s, hidden_c, drop_p,
                 )
                 for _ in range(num_layers)
             ]
@@ -61,10 +61,10 @@ class MLPMixer(nn.Module):
 
 
 class MixerLayer(nn.Module):
-    def __init__(self, num_patches, hidden_size, hidden_s, hidden_c, drop_p, off_act):
+    def __init__(self, num_patches, hidden_size, hidden_s, hidden_c, drop_p):
         super(MixerLayer, self).__init__()
-        self.mlp1 = MLP1(num_patches, hidden_s, hidden_size, drop_p, off_act)
-        self.mlp2 = MLP2(hidden_size, hidden_c, drop_p, off_act)
+        self.mlp1 = MLP1(num_patches, hidden_s, hidden_size, drop_p)
+        self.mlp2 = MLP2(hidden_size, hidden_c, drop_p)
 
     def forward(self, x):
         out = self.mlp1(x)
@@ -73,7 +73,7 @@ class MixerLayer(nn.Module):
 
 
 class MLP1(nn.Module):
-    def __init__(self, num_patches, hidden_s, hidden_size, drop_p, off_act):
+    def __init__(self, num_patches, hidden_s, hidden_size, drop_p):
         super(MLP1, self).__init__()
         self.ln = nn.LayerNorm(hidden_size)
         self.fc1 = nn.Conv1d(num_patches, hidden_s, kernel_size=1)
@@ -89,7 +89,7 @@ class MLP1(nn.Module):
 
 
 class MLP2(nn.Module):
-    def __init__(self, hidden_size, hidden_c, drop_p, off_act):
+    def __init__(self, hidden_size, hidden_c, drop_p):
         super(MLP2, self).__init__()
         self.ln = nn.LayerNorm(hidden_size)
         self.fc1 = nn.Linear(hidden_size, hidden_c)
