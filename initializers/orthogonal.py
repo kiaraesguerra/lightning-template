@@ -39,5 +39,7 @@ def OrthoInit(model, args):
             module.weight = nn.Parameter(
                 _ortho_generator(module, args.activation) * args.gain
             )
+        elif isinstance(module, nn.Conv1d):
+            torch.nn.init.orthogonal_(module.weight, gain=args.gain)
 
     return model

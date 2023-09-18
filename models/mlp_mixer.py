@@ -40,11 +40,7 @@ class MLPMixer(nn.Module):
         self.mixer_layers = nn.Sequential(
             *[
                 MixerLayer(
-                    num_patches,
-                    hidden_size,
-                    hidden_s,
-                    hidden_c,
-                    drop_p,
+                    num_patches, hidden_size, hidden_s, hidden_c, drop_p,
                 )
                 for _ in range(num_layers)
             ]

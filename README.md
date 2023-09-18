@@ -71,14 +71,14 @@ Pruning can be applied to a model with pretrained weights, from scratch, or from
 
 ### 1. Pruning a pretrained model
 ```
-python main.py --model resnet18 --pretrained --dataset cifar10 --prune --method group_norm --speed-up 2 --autoaugment
+python main.py --model resnet18 --pretrained --dataset cifar10 --callbacks prune --method group_norm --speed-up 2 --autoaugment
 ```
 
 ### 2. Pruning a model you've previously trained
 This method is especially useful in pruning techniques which have an option for sparsity learning such as 'group_sl' and 'slim'. Sparsity learning is an additional training step which regularizes the model to make it more suitable for pruning. The procedure is as follows: Pretrain -> Sparsity Learning -> Prune -> Finetune
 
 ```
-python main.py --model resnet18 --pretrained-path 'path/to/pretrained_model.pt' --dataset cifar10 --prune --method group_norm --speed-up 2 --autoaugment 
+python main.py --model resnet18 --pretrained-path 'path/to/pretrained_model.pt' --dataset cifar10 --callbacks prune --method group_norm --speed-up 2 --autoaugment 
 ```
 
 
