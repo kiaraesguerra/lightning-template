@@ -40,12 +40,12 @@ parser.add_argument("--seed", type=int, default=3407)
 
 # Augmentations
 parser.add_argument("--autoaugment", action="store_true")
-parser.add_argument("--horizontal-flip", type=float, default=0.5)
-parser.add_argument("--vertical-flip", type=float, default=0.5)
-parser.add_argument("--random-rotations", type=float, default=0.5)
-parser.add_argument("--color-jitter", type=float, default=0.5)
-parser.add_argument("--shift-scale-rotate", type=float, default=0.5)
-parser.add_argument("--random-crop", type=float, default=0.5)
+parser.add_argument("--horizontal-flip", type=float, default=0)
+parser.add_argument("--vertical-flip", type=float, default=0)
+parser.add_argument("--random-rotations", type=float, default=0)
+parser.add_argument("--color-jitter", type=float, default=0)
+parser.add_argument("--shift-scale-rotate", type=float, default=0)
+parser.add_argument("--random-crop", type=float, default=0)
 
 # Training
 parser.add_argument("--device", type=str, default="cuda")
