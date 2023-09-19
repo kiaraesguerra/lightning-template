@@ -40,6 +40,7 @@ parser.add_argument("--num-workers", type=int, default=4)
 parser.add_argument("--seed", type=int, default=3407)
 
 # Augmentations
+parser.add_argument("--cutmix-prob", type=float, default=0.0)
 parser.add_argument("--autoaugment", action="store_true")
 parser.add_argument("--horizontal-flip", type=float, default=0)
 parser.add_argument("--vertical-flip", type=float, default=0)
