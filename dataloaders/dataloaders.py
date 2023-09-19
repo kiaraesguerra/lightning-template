@@ -81,23 +81,23 @@ def get_transform(args):
         transforms.Resize(size=(args.image_size, args.image_size)),
     ]
 
-    train_transform_list.extend(
-        [transforms.RandomHorizontalFlip(p=args.horizontal_flip)]
-    )
-    train_transform_list.extend([transforms.RandomVerticalFlip(p=args.vertical_flip)])
-    train_transform_list.extend(
-        [transforms.RandomRotation(degrees=args.random_rotations)]
-    )
-    train_transform_list.extend(
-        [
-            transforms.ColorJitter(
-                brightness=args.color_jitter,
-                contrast=args.color_jitter,
-                saturation=args.color_jitter,
-                hue=args.color_jitter,
-            )
-        ]
-    )
+    # train_transform_list.extend(
+    #     [transforms.RandomHorizontalFlip(p=args.horizontal_flip)]
+    # )
+    # train_transform_list.extend([transforms.RandomVerticalFlip(p=args.vertical_flip)])
+    # train_transform_list.extend(
+    #     [transforms.RandomRotation(degrees=args.random_rotations)]
+    # )
+    # train_transform_list.extend(
+    #     [
+    #         transforms.ColorJitter(
+    #             brightness=args.color_jitter,
+    #             contrast=args.color_jitter,
+    #             saturation=args.color_jitter,
+    #             hue=args.color_jitter,
+    #         )
+    #     ]
+    # )
 
     if args.autoaugment:
         if args.dataset in ["cifar10", "cifar100", "cinic10"]:
