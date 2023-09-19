@@ -1,5 +1,4 @@
 
-<hr>
 <div align="center">
 
 # Lightning Template with Model Compression Techniques
