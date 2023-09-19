@@ -20,6 +20,7 @@ class MLPMixer(nn.Module):
         num_classes=10,
         drop_p=0.0,
         is_cls_token=False,
+        norm_off=False,
     ):
         super(MLPMixer, self).__init__()
         num_patches = img_size // patch_size * img_size // patch_size
@@ -40,12 +41,12 @@ class MLPMixer(nn.Module):
         self.mixer_layers = nn.Sequential(
             *[
                 MixerLayer(
-                    num_patches, hidden_size, hidden_s, hidden_c, drop_p,
+                    num_patches, hidden_size, hidden_s, hidden_c, drop_p, norm_off
                 )
                 for _ in range(num_layers)
             ]
         )
-        self.ln = nn.LayerNorm(hidden_size)
+        self.ln = nn.LayerNorm(hidden_size) if not norm_off else nn.Identity()
 
         self.clf = nn.Linear(hidden_size, num_classes)
 
@@ -61,10 +62,10 @@ class MLPMixer(nn.Module):
 
 
 class MixerLayer(nn.Module):
-    def __init__(self, num_patches, hidden_size, hidden_s, hidden_c, drop_p):
+    def __init__(self, num_patches, hidden_size, hidden_s, hidden_c, drop_p, norm_off):
         super(MixerLayer, self).__init__()
-        self.mlp1 = MLP1(num_patches, hidden_s, hidden_size, drop_p)
-        self.mlp2 = MLP2(hidden_size, hidden_c, drop_p)
+        self.mlp1 = MLP1(num_patches, hidden_s, hidden_size, drop_p, norm_off)
+        self.mlp2 = MLP2(hidden_size, hidden_c, drop_p, norm_off)
 
     def forward(self, x):
         out = self.mlp1(x)
@@ -73,9 +74,9 @@ class MixerLayer(nn.Module):
 
 
 class MLP1(nn.Module):
-    def __init__(self, num_patches, hidden_s, hidden_size, drop_p):
+    def __init__(self, num_patches, hidden_s, hidden_size, drop_p, norm_off=False):
         super(MLP1, self).__init__()
-        self.ln = nn.LayerNorm(hidden_size)
+        self.ln = nn.LayerNorm(hidden_size) if not norm_off else nn.Identity()
         self.fc1 = nn.Conv1d(num_patches, hidden_s, kernel_size=1)
         self.do1 = nn.Dropout(p=drop_p)
         self.fc2 = nn.Conv1d(hidden_s, num_patches, kernel_size=1)
@@ -89,9 +90,9 @@ class MLP1(nn.Module):
 
 
 class MLP2(nn.Module):
-    def __init__(self, hidden_size, hidden_c, drop_p):
+    def __init__(self, hidden_size, hidden_c, drop_p, norm_off=False):
         super(MLP2, self).__init__()
-        self.ln = nn.LayerNorm(hidden_size)
+        self.ln = nn.LayerNorm(hidden_size) if not norm_off else nn.Identity()
         self.fc1 = nn.Linear(hidden_size, hidden_c)
         self.do1 = nn.Dropout(p=drop_p)
         self.fc2 = nn.Linear(hidden_c, hidden_size)
@@ -116,6 +117,7 @@ def mlp_mixer(args):
         num_classes=10,
         drop_p=0.0,
         is_cls_token=False,
+        norm_off=args.norm_off,
     )
 
     return model

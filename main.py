@@ -16,6 +16,7 @@ parser = argparse.ArgumentParser(description="PyTorch Lightning Trainer")
 
 # Model Initialization
 parser.add_argument("--model", type=str, default="resnet18")
+parser.add_argument("--norm-off", action="store_true")
 parser.add_argument("--pretrained", action="store_true")
 parser.add_argument("--weight-init", type=str, default="OrthoInit")
 parser.add_argument("--gain", type=float, default=1.0)
