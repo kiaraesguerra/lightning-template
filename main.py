@@ -8,6 +8,8 @@ from utils.train_utils import get_plmodule
 from callbacks.callbacks import get_callback
 from loggers.loggers import get_logger
 from exports.exports import export_model
+from lrs.lrs_init_call import get_ls_init
+from utils.pruning_utils import measure_sparsity, remove_parameters
 
 
 parser = argparse.ArgumentParser(description="PyTorch Lightning Trainer")
@@ -38,6 +40,7 @@ parser.add_argument("--num-workers", type=int, default=4)
 parser.add_argument("--seed", type=int, default=3407)
 
 # Augmentations
+parser.add_argument("--cutmix-prob", type=float, default=0.0)
 parser.add_argument("--autoaugment", action="store_true")
 parser.add_argument("--horizontal-flip", type=float, default=0)
 parser.add_argument("--vertical-flip", type=float, default=0)
@@ -96,7 +99,7 @@ parser.add_argument("--max-sparsity", type=float, default=1.0)
 parser.add_argument("--exports", nargs="+", help="<Required> Set flag")
 # Can add: "onnx", "torchscript"
 
-# Saving and logging
+
 args = parser.parse_args()
 
 
@@ -112,6 +115,10 @@ if __name__ == "__main__":
         pass
     else:
         model = get_weight_init(model, args)
+
+    if args.lrs:
+        model = get_ls_init(model, args)
+
     model = get_plmodule(model, args)
     callbacks = get_callback(args)
     logger = get_logger(args)
@@ -125,10 +132,14 @@ if __name__ == "__main__":
 
     trainer.fit(model, train_dl, validate_dl)
     trainer.test(dataloaders=test_dl)
+
+    model_sparsity, model_nonzeros = measure_sparsity(model)
+    print(f"Model sparsity = {model_sparsity}, number of nonzeros = {model_nonzeros}")
     if callbacks:
         ckpt_path = [a for a in callbacks if "checkpoint" in str(a)][0].best_model_path
     model_checkpoint = torch.load(ckpt_path)
-    model.load_state_dict(model_checkpoint["state_dict"])
 
+    model.load_state_dict(model_checkpoint["state_dict"])
+    remove_parameters(model)
     args.sample_input = train_dl.dataset[0][0].unsqueeze(0)
     export_model(model, args)
